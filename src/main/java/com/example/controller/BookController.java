@@ -10,6 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -26,6 +32,16 @@ public class BookController {
         this.repository = repository;
     }
 
+    @Operation(summary = "Get a book by its id")
+    @ApiResponses( {
+        @ApiResponse(responseCode = "200", description = "Found the book",
+          content = {@Content(mediaType = "application/json",
+            schema = @Schema(implementation = Book.class))}),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+          content = @Content),
+        @ApiResponse(responseCode = "404", description = "Book not found",
+          content = @Content)
+    })
     @GetMapping("/{id}")
     public Book findById(@PathVariable String id) {
         return repository.findById(id)
