@@ -48,11 +48,21 @@ public class BookController {
                 .orElseThrow(() -> new BookNotFoundException("Book with id " + id + " is not found."));
     }
 
+    /**
+     * Find all books.
+     * @return all books available
+     */
     @GetMapping("/")
     public Collection<Book> findBooks() {
         return repository.findAll();
     }
 
+    /**
+     * Filter book.
+     * @param pageable
+     *      the pageable object
+     * @return Page
+     */
     @GetMapping("/filter")
     public Page<Book> filterBook(@ParameterObject Pageable pageable) {
         return repository.findAll(pageable);

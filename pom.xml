@@ -47,6 +47,11 @@
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>${springdoc.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-javadoc</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
 
 	</dependencies>
 
@@ -86,6 +91,19 @@
 				    <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
 					<outputFileName>openapi.json</outputFileName>
 					<outputDir>${project.build.directory}</outputDir>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+				    <annotationProcessorPaths>
+					    <path>
+						    <groupId>com.github.therapi</groupId>
+							<artifactId>therapi-runtime-javadoc-scribe</artifactId>
+							<version>0.13.0</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>

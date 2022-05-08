@@ -10,10 +10,16 @@ public class Book {
     @Id
     private String id;
 
+    /**
+     * book title
+     */
     @NotBlank
     @Size(max = 20)
     private String title;
 
+    /**
+     * book author
+     */
     @NotBlank
     @Size(max = 30)
     private String author;
