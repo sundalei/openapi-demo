@@ -7,6 +7,8 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,11 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
-@RequestMapping("/api/book")
+@RequestMapping("/books")
 public class BookController {
 
     private final BookRepository repository;
@@ -32,7 +37,7 @@ public class BookController {
         this.repository = repository;
     }
 
-    @Operation(summary = "Get a book by its id")
+    @Operation(summary = "Get a book by its id", tags = "Get")
     @ApiResponses( {
         @ApiResponse(responseCode = "200", description = "Found the book",
           content = {@Content(mediaType = "application/json",
@@ -43,16 +48,26 @@ public class BookController {
           content = @Content)
     })
     @GetMapping("/{id}")
-    public Book findById(@PathVariable String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book with id " + id + " is not found."));
+    public EntityModel<Book> findById(@PathVariable String id) {
+        Optional<Book> optional = repository.findById(id);
+        if (optional.isEmpty()) {
+            throw new BookNotFoundException("Book with id " + id + " is not found.");
+        }
+
+        EntityModel<Book> entityModel = EntityModel.of(optional.get());
+
+        WebMvcLinkBuilder linkToBooks =
+                linkTo(methodOn(BookController.class).findBooks());
+        entityModel.add(linkToBooks.withRel("all-books"));
+
+        return entityModel;
     }
 
     /**
      * Find all books.
      * @return all books available
      */
-    @GetMapping("/")
+    @GetMapping
     public Collection<Book> findBooks() {
         return repository.findAll();
     }
@@ -73,16 +88,7 @@ public class BookController {
     public Book updateBook(
             @PathVariable("id") final String id,
             @RequestBody final Book book) {
-        Optional<Book> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            Book update = optional.get();
-            update.setTitle(book.getTitle());
-            update.setAuthor(book.getAuthor());
-            return update;
-        } else {
-            book.setId(id);
-            return book;
-        }
+        return checkAndUpdate(id, book);
     }
 
     @PatchMapping("/{id}")
@@ -90,6 +96,10 @@ public class BookController {
     public Book patchBook(
             @PathVariable("id") final String id,
             @RequestBody final Book book) {
+        return checkAndUpdate(id, book);
+    }
+
+    private Book checkAndUpdate(String id, Book book) {
         Optional<Book> optional = repository.findById(id);
         if (optional.isPresent()) {
             Book update = optional.get();

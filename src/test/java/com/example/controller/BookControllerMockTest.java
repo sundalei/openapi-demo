@@ -42,7 +42,7 @@ public class BookControllerMockTest {
         String response = new ObjectMapper().writeValueAsString(book);
 
         when(repository.findById(bookId)).thenReturn(Optional.of(book));
-        this.mockMvc.perform(get("/api/book/1"))
+        this.mockMvc.perform(get("/books/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(response));
@@ -52,7 +52,7 @@ public class BookControllerMockTest {
     public void bookShouldThrowException() throws Exception {
         String bookId = "2";
         when(repository.findById(bookId)).thenReturn(Optional.empty());
-        this.mockMvc.perform(get("/api/book/2"))
+        this.mockMvc.perform(get("/books/2"))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BookNotFoundException))
                 .andExpect(result -> assertEquals("Book with id 2 is not found.",

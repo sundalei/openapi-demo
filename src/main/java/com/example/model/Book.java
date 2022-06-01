@@ -3,7 +3,7 @@ package com.example.model;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.annotation.Id;
 
 public class Book {
 

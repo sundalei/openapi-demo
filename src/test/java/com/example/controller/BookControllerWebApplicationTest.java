@@ -18,7 +18,7 @@ public class BookControllerWebApplicationTest {
 
     @Test
     public void bookShouldReturnFromRepository() throws Exception {
-        this.mockMvc.perform(get("/api/book/1"))
+        this.mockMvc.perform(get("/books/1"))
                 .andExpect(status().isNotFound());
     }
 }
