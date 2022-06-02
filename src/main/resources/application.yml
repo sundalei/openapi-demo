@@ -1,3 +1,13 @@
 springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+  use-management-port: true
+  show-actuator: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - openapi
+          - swagger-ui
+          - beans
+  server:
+    port: 9090
