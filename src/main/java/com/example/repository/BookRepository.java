@@ -1,10 +1,11 @@
 package com.example.repository;
 
 import com.example.model.Book;
-import org.springframework.data.mongodb.repository.MongoRepository;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookRepository extends MongoRepository<Book, String> {
+public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
 
 }

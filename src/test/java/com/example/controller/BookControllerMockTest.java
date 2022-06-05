@@ -32,10 +32,10 @@ public class BookControllerMockTest {
 
     @Test
     public void bookShouldReturnFromRepository() throws Exception {
-        String bookId = "1";
+        Long bookId = 1L;
 
         Book book = new Book();
-        book.setId("1");
+        book.setId(1L);
         book.setTitle("Spring");
         book.setAuthor("Spring");
 
@@ -50,7 +50,7 @@ public class BookControllerMockTest {
 
     @Test
     public void bookShouldThrowException() throws Exception {
-        String bookId = "2";
+        Long bookId = 2L;
         when(repository.findById(bookId)).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/books/2"))
                 .andExpect(status().isNotFound())

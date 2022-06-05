@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -37,7 +36,7 @@ public class BookController {
         this.repository = repository;
     }
 
-    @Operation(summary = "Get a book by its id", tags = "Get")
+    @Operation(summary = "Get a book by its id")
     @ApiResponses( {
         @ApiResponse(responseCode = "200", description = "Found the book",
           content = {@Content(mediaType = "application/json",
@@ -48,7 +47,7 @@ public class BookController {
           content = @Content)
     })
     @GetMapping("/{id}")
-    public EntityModel<Book> findById(@PathVariable String id) {
+    public EntityModel<Book> findById(@PathVariable Long id) {
         Optional<Book> optional = repository.findById(id);
         if (optional.isEmpty()) {
             throw new BookNotFoundException("Book with id " + id + " is not found.");
@@ -63,12 +62,8 @@ public class BookController {
         return entityModel;
     }
 
-    /**
-     * Find all books.
-     * @return all books available
-     */
     @GetMapping
-    public Collection<Book> findBooks() {
+    public Iterable<Book> findBooks() {
         return repository.findAll();
     }
 
@@ -86,7 +81,7 @@ public class BookController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Book updateBook(
-            @PathVariable("id") final String id,
+            @PathVariable("id") final Long id,
             @RequestBody final Book book) {
         return checkAndUpdate(id, book);
     }
@@ -94,12 +89,12 @@ public class BookController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Book patchBook(
-            @PathVariable("id") final String id,
+            @PathVariable("id") final Long id,
             @RequestBody final Book book) {
         return checkAndUpdate(id, book);
     }
 
-    private Book checkAndUpdate(String id, Book book) {
+    private Book checkAndUpdate(Long id, Book book) {
         Optional<Book> optional = repository.findById(id);
         if (optional.isPresent()) {
             Book update = optional.get();
@@ -112,7 +107,7 @@ public class BookController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book postBook(@NotNull @Valid @RequestBody final Book book) {
         repository.save(book);
@@ -127,7 +122,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteBook(@PathVariable final String id) {
+    public Long deleteBook(@PathVariable final Long id) {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
             return id;

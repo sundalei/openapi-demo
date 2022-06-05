@@ -11,3 +11,14 @@ management:
           - beans
   server:
     port: 9090
+
+spring:
+  datasource:
+    username: root
+    password: mypassword
+    url: jdbc:mysql://localhost/book_management
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
